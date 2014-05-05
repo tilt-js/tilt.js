@@ -12,8 +12,6 @@ var RIGHT = 1;
 var TOP = 1;
 var BOTTOM = -1;
 
-console.log("HEY THERE, NEERAJ! Good job deploying me! Grab another beer!!");
-
 function setDepth (room, index, depth) {
     if (depth >= BOTTOM && depth <= TOP)  {
         room.socket.emit('updateDepth', index, depth);
