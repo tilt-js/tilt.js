@@ -1,0 +1,8 @@
+Protocol:
+Requires JSON in the following form:
+{fn: 'functionName', args: object}
+
+fn (string) 			args (object)
+joinRoom				id: string
+setDepth				depth: [-1, 1]
+setDirection			direction: [-1, 1]

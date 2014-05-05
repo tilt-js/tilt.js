@@ -1,0 +1,437 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+  <meta name="msapplication-TileColor" content="#943827">
+  <meta name="msapplication-TileImage" content="/favicon-144.png">
+  <link rel="apple-touch-icon-precomposed" href="/favicon-152.png">
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+
+  <title>Sharky Shark Controller</title>
+  <style>
+    html, body {
+      height: 100%;
+    }
+    body {
+      position: relative;
+      color: white;
+      background: #03a;
+    }
+    input, button {
+      display: block;
+      width: 80%;
+      max-width: 240px;
+      margin: .6em auto 1em;
+      padding: .2em;
+      border: 1px solid #888;
+      outline: 0;
+      text-transform: uppercase;
+      text-align: center;
+      font-size: 24px;
+      font-family: VT323, monospace;
+    }
+    #joinRoom {
+      padding-bottom: 1em;
+    }
+    button {
+      position: relative;
+      padding: .4em;
+      border-radius: 50%;
+      cursor: pointer;
+      background: #fff;
+    }
+    button:before,
+    button:after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      height: 4px;
+      width: 24%;
+      margin-top: -2px;
+      background-color: #ffaaaa;
+    }
+    button:before {
+      left: 2%;
+    }
+    button:after {
+      right: 2%;
+    }
+    p {
+      height: 150px;
+      line-height: 150px;
+      margin: 0;
+      font-size: 48px;
+    }
+    #lobbyScreen img {
+      display: inline-block;
+      margin-right: 12px;
+    }
+    #lobbyScreen h1 {
+      display: inline-block;
+      margin-bottom: 8px;
+    }
+    #lobbyScreen .inner {
+      background-image: url(resource/pretty_flower/hibiscus.png) no-repeat top right;
+    }
+
+
+    #playScreen * {
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      -o-user-select: none;
+      user-select: none;
+    }
+    #roundNo {
+      display: none;
+    }
+    .roundNo #roundNo {
+      display: block;
+    }
+    #playName,
+    #playScore
+    {
+      display: none;
+    }
+    .touchup #playName,
+    .touchup #playScore
+    {
+      display: block;
+    }
+    #chomping {
+      display: none;
+      font-size: 48px;
+    }
+    .touchdown #chomping {
+      display: block;
+    }
+
+    #deadScreen {
+      background-color: #000000;
+    }
+    body>div {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      display: none;
+      font-family: VT323, monospace;
+      -moz-text-size-adjust: 100%;
+      -webkit-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+      text-align: center;
+    }
+    .inner {
+      position: absolute;
+      top: 50%; left: 0; right: 0;
+      height: 300px;
+      margin-top: -150px;
+    }
+    .lobbyScreen #lobbyScreen,
+    .waitScreen #waitScreen,
+    .playScreen #playScreen,
+    .deadScreen #deadScreen {
+      display: block;
+    }
+
+    #waitScreen {
+      z-index: 100;
+      top: 50%;
+      height: 240px;
+      left: 10%;
+      right: 10%;
+      margin-top: -120px;
+      border: 2px solid black;
+      background: white;
+      box-shadow: 0 0 0 1000px rgba(255, 255, 255, 0.8);
+    }
+    #waitScreen h1 {
+      margin-bottom: .4em;
+      font-size: 48px;
+      color: black;
+    }
+    #waitScreen p {
+      line-height: 18px;
+      width: 80%;
+      margin: 1em auto 0;
+      font-size: 18px;
+      color: black;
+    }
+    .waiting #button {
+      /* load animation, if we have time */
+    }
+  </style>
+  <link href='http://fonts.googleapis.com/css?family=VT323' rel='stylesheet' type='text/css'>
+
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','http://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-49939229-3', 'rl.io');
+    ga('send', 'pageview');
+
+  </script>
+</head>
+
+<body class="lobbyScreen">
+
+  <div id="lobbyScreen">
+    <div class="inner">
+      <img src="./favicon-32.png" alt="Ben Eath, Ace Surfer">
+      <h1>Ben Eath: the Surf Ace</h1>
+      <form id="joinRoom">
+        <input id="playerName" type="text" name="playerName" placeholder="name" maxlength="5">
+        <input id="roomId" type="text" name="roomId" placeholder="Room ID">
+        <button id="button" type="submit" name="submit">Surf's up!</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="waitScreen">
+    <h1>Waiting</h1>
+    <p id="waitMessage">Tilt to move, tap to chomp. Place the top of your phone in your left hand and tap to start!</p>
+  </div>
+
+  <div class="roundNo" id="playScreen">
+    <div class="inner">
+      <p id="roundNo">Round <span id="actualRoundNumber">1</span></p>
+      <p id="playName">Riley</p>
+      <p id="playScore">0</p>
+      <p id="chomping">CHOMP!</p>
+    </div>
+  </div>
+
+  <div id="deadScreen">
+    <h1>You have died! Thanks for sharking!</h1>
+  </div>
+
+  <script src="./lib/socket.io.js"></script>
+
+  <script>
+    // This entire thing seriously needs some (refactoring)
+    ;(function(global) {
+      var socket;
+
+      var connectSocket = function() {
+        socket = io.connect('http://surf.rl.io:9000', {
+          'reconnection delay': 400,
+          'max reconnection attempts': 10
+        });
+      };
+      connectSocket();
+
+      var joinRoom = function(nameValue, idValue) {
+        socket.emit('joinRoom', 'controller', nameValue, idValue);
+      };
+
+      navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
+
+      var vibratePhone = function(duration) {
+        if (navigator.vibrate) {
+          if(typeof duration !== 'number') {
+            duration = 600;
+          }
+          navigator.vibrate(duration);
+        }
+      };
+
+      // DOM elements
+      var body = document.body;
+      var form = document.getElementById('joinRoom');
+      var playerName = document.getElementById('playerName');
+      var roomId = document.getElementById('roomId');
+      var button = document.getElementById('button');
+      var waitScreen = document.getElementById('waitScreen');
+      var waitMessage = document.getElementById('waitMessage');
+      var playScreen = document.getElementById('playScreen');
+      var actualRoundNumber = document.getElementById('actualRoundNumber');
+      var scores = [
+        document.getElementById('playScore')
+      ];
+      var names = [
+        document.getElementById('playName')
+      ];
+
+      var reconnectName, reconnectId;
+
+      var shark = {
+        direction: 0,
+        depth: 0,
+        score: 0
+      };
+
+      var playerColors = [
+        '#f00',
+        '#00f',
+        '#0f0',
+        '#ff0',
+        '#f88',
+        '#80f',
+        '#fff',
+        '#000'
+      ];
+
+      var addClass = (function() {
+        if (body.classList) {
+          return function(el, className) {
+            el.classList.add(className);
+          };
+        } else {
+          return function(el, className) {
+            el.className += ' ' + className;
+          };
+        }
+      })();
+
+      var changeScreen = function(name) {
+        body.className = name + 'Screen';
+      };
+
+      // updated: now using dynamic latching, meaning that any value
+      // [-1, 1] can be sent instead of a finite set of values
+      var latchDegrees = 3;
+      var maxDegrees = 30;
+      var latch = latchDegrees / maxDegrees;
+
+      function bounded(angle, max) {
+        return Math.min(Math.max(angle, -max), max);
+      }
+
+      function latchCheck(measurement, metric, fn) {
+        // normalize to [-1, 1]
+        measurement = bounded(measurement, maxDegrees) / maxDegrees;
+        // only sends if their thumb is on the device
+        if (Math.abs(measurement - shark[metric]) >= latch) {
+          shark[metric] = measurement;
+          socket.emit(fn, measurement);
+        }
+      }
+
+      form.addEventListener("submit", function(e) {
+        var nameValue = playerName.value;
+        var idValue = roomId.value;
+
+        if (nameValue && idValue) {
+          addClass(body, 'waiting');
+          joinRoom(nameValue, idValue);
+          reconnectName = nameValue;
+          reconnectId = idValue;
+        }
+
+        e.preventDefault();
+        return false;
+      }, false);
+
+      socket.on('verifyRoom', function(roomExists, index) {
+        if(roomExists) {
+          waitMessage.textContent = 'Tilt to move, tap to chomp. Place the top of your phone in your left hand and tap to start!';
+          changeScreen('wait');
+          body.style.backgroundColor = playerColors[index];
+          names.forEach(function(el) {
+            el.textContent = reconnectName;
+          });
+          socket.on('notifyDeath', function() {
+	    changeScreen('dead');
+	    vibratePhone();
+	  });
+          socket.on('updateScore', function(score) {
+            shark.score = score;
+            scores.forEach(function(el) {
+              el.textContent = score;
+            });
+            vibratePhone();
+          });
+
+          socket.on('startRound', function(round) {
+            playScreen.className = "roundNo";
+            actualRoundNumber.textContent = round;
+            setTimeout(function() {
+              playScreen.className = "touchup";
+            }, 1600);
+            changeScreen('play');
+            vibratePhone();
+          });
+
+          socket.on('finishRound', function(round, message) {
+            waitMessage.innerText = message;
+            changeScreen('wait');
+            vibratePhone();
+          });
+
+          // Add other socket listeners here (blood, etc)
+          global.addEventListener('deviceorientation', function(eventData) {
+            // gamma: left-to-right tilt, right is positive;
+            // handles depth, -90deg to 90deg
+            var gamma = eventData.gamma;
+
+            // beta: front-to-back tilt, front is positive;
+            // handles direction, -90deg to 90deg
+            var beta = eventData.beta;
+
+            latchCheck(gamma, 'depth', 'setDepth');
+            latchCheck(beta, 'direction', 'setDirection');
+          }, false);
+
+          waitScreen.addEventListener('mousedown', function() {
+            socket.emit('chomp');
+          });
+          waitScreen.addEventListener('touchstart', function() {
+            socket.emit('chomp');
+          });
+          waitScreen.addEventListener('pointerdown', function() {
+            socket.emit('chomp');
+          });
+
+
+          playScreen.addEventListener('mousedown', function() {
+            playScreen.className = 'touchdown';
+            socket.emit('chomp');
+          }, false);
+          playScreen.addEventListener('touchstart', function() {
+            playScreen.className = 'touchdown';
+            socket.emit('chomp');
+          }, false);
+          playScreen.addEventListener('pointerdown', function() {
+            playScreen.className = 'touchdown';
+            socket.emit('chomp');
+          }, false);
+          playScreen.addEventListener('mouseup', function() {
+            playScreen.className = 'touchup';
+          }, false);
+          playScreen.addEventListener('touchend', function() {
+            playScreen.className = 'touchup';
+          }, false);
+          playScreen.addEventListener('pointerup', function() {
+            playScreen.className = 'touchup';
+          }, false);
+        }
+      });
+
+      socket.on('error', function(e) {
+        socket.socket.connect();
+        joinRoom(reconnectName, reconnectId);
+      });
+
+      socket.on('disconnect', function() {
+        socket.socket.connect();
+        changeScreen('lobby');
+      });
+
+      socket.on('bootPlayer', function() {
+        changeScreen('lobby');
+      });
+
+    })(this);
+  </script>
+
+</body>
+</html>

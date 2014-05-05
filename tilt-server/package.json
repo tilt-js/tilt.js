@@ -1,0 +1,12 @@
+{
+  "name": "the-surf-ace",
+  "version": "0.0.0",
+  "description": "Ben Eath, The Surf Ace",
+  "main": "app.js",
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "socket.io": "^0.9.16",
+    "ws": "~0.4.31"
+  }
+}
