@@ -1,0 +1,28 @@
+{
+  "name": "tilt",
+  "version": "0.0.0",
+  "description": "Use mobile phones to control your HTML5 game",
+  "main": "dist/tilt-client.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lord/tilt.js"
+  },
+  "author": "The Tilt.js Team",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lord/tilt.js/issues"
+  },
+  "homepage": "https://github.com/lord/tilt.js",
+  "dependencies": {},
+  "devDependencies": {
+    "grunt-contrib-uglify": "^0.4.0",
+    "grunt-contrib-jshint": "~0.10.0",
+    "grunt-contrib-concat": "^0.4.0",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt": "~0.4.0",
+    "grunt-cli": "^0.1.13"
+  }
+}
