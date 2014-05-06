@@ -2,9 +2,9 @@
 ;(function(exports) {
 	var connect = function(server, room_number) {
 		if (room_number === undefined) {
-			return new exports.Tilt.Room(server);
+			return new exports.Tilt.Sock(server);
 		} else {
-			return new exports.Tilt.Game(server);
+			return new exports.Tilt.Sock(server, room_number);
 		}
 	};
 

@@ -6,14 +6,10 @@ module.exports = function(grunt) {
         // a string to put between each file
         separator: ';'
       },
-      client: {
+      build: {
         src: ['src/**/*.js'],
-        dest: 'dist/tilt-client.js'
+        dest: 'dist/tilt.js'
       },
-      controller: {
-        src: ['src/**/*.js'],
-        dest: 'dist/tilt-controller.js'
-      }
     },
     uglify: {
       options: {
@@ -22,8 +18,7 @@ module.exports = function(grunt) {
       },
       dist: {
         files: {
-          'dist/tilt-client.min.js': ['<%= concat.client.dest %>'],
-          'dist/tilt-controller.min.js': ['<%= concat.controller.dest %>']
+          'dist/tilt.min.js': ['<%= concat.build.dest %>'],
         }
       }
     },
