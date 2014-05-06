@@ -1,4 +1,4 @@
-joystick.js
+tilt.js
 ===========
 
-Use smartphones as controllers for your HTML5 game
+Use mobile phones to control your HTML5 game.
