@@ -38,7 +38,7 @@
 
       return this;
     },
-    send: function() {
+    emit: function() {
       var a = arguments;
       a.unshift('msg');
       this.socket.emit.apply(null, arguments);
