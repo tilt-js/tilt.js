@@ -1,5 +1,5 @@
 {
-  "name": "tilt",
+  "name": "tilt-client",
   "version": "0.0.0",
   "description": "Use mobile phones to control your HTML5 game",
   "main": "dist/tilt-client.js",
