@@ -43,7 +43,7 @@
     this.callbacks = {};
 
     this.socket.on('msg', function() {
-      this.recieveMsg(arguments);
+      self.receiveMsg(arguments);
     });
   };
 
@@ -62,18 +62,19 @@
       return this;
     },
     emit: function() {
-      var a = arguments;
+      var a = Array.prototype.slice.call(arguments);
       a.unshift('msg');
-      this.socket.emit.apply(null, arguments);
+      this.socket.emit.apply(this.socket, a);
 
       return this;
     },
     // INTERNAL FUNCTIONS
     receiveMsg: function(args) {
+      var a = Array.prototype.slice.call(args);
       var e = args.shift();
       if (this.callbacks[e] !== undefined) {
         for (var i in this.callbacks[e]) {
-          this.callbacks[e][i].apply(this, args);
+          this.callbacks[e][i].apply(this, a);
         }
       }
     },
