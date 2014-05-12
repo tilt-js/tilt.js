@@ -1,9 +1,10 @@
 var io = require('socket.io-client')
-, assert = require('assert')
-, expect = require('expect.js');
+, assert = require('assert');
 
-describe('Suite of unit tests', function() {
+describe('Testing Suite', function() {
     var socket;
+    var pong;
+    var joinRoom;
     beforeEach(function(done) {
         // Setup
         socket = io.connect('http://localhost:9000', {
@@ -17,7 +18,23 @@ describe('Suite of unit tests', function() {
         });
         socket.on('disconnect', function() {
             console.log('disconnected...');
-        })
+        });
+
+        callbacks = {
+            pong: function(){
+                console.log('pong was called');
+            },
+            notifyRoomID: function(id) {
+                console.log('joined room. Got id ' + id);
+            }
+        };
+
+        spyOn(callbacks, "pong");
+        spyOn(callbacks, "notifyRoomID");
+        socket.on("pong", callbacks.pong);
+        socket.on("notifyRoomID", callbacks.notifyRoomID);
+        socket.emit('ping');
+        socket.emit('join', 'computer');
 
     });
 
@@ -35,9 +52,21 @@ describe('Suite of unit tests', function() {
 
     describe('Checking connection', function() {
         it('Just checking basic connection', function(done) {
-            expect([1, 2, 3].indexOf(5)).to.be.equal(-1);
+            expect(true).toBe(true);
             done();
         });
+
+        it('Checking pong', function(done) {
+            expect(callbacks.pong).wasCalled();
+            done();
+        });
+
+        
+        it('checking join room', function(done) {
+            expect(callbacks.notifyRoomID).wasCalled();
+            done();
+        });
+
     });
 
 });
