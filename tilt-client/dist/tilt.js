@@ -36,6 +36,10 @@
       this.roomID = roomid;
     }
 
+    this.socket.on('notifySuccess', function() {
+      console.log("success!");
+    });
+
     this.callbacks = {};
 
     this.socket.on('msg', function() {
@@ -79,7 +83,7 @@
         return false;
       }
 
-      if (this.controllers.indexOf(controllerID) !== -1) {
+      if (this.controllers.indexOf(controllerID) === -1) {
         this.controllers.push(controllerID);
       }
     },
