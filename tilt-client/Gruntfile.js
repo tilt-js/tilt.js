@@ -33,9 +33,16 @@ module.exports = function(grunt) {
         }
       }
     },
+    jasmine : {
+      src : 'src/**/*.js',
+      options: {
+        specs : 'spec/**/*spec.js',
+        helpers : 'spec/helpers/*.js'
+      }
+    },
     watch: {
       files: ['<%= jshint.files %>'],
-      tasks: ['jshint']
+      tasks: ['default']
     }
   });
 
@@ -43,6 +50,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-concat');
+  grunt.loadNpmTasks('grunt-contrib-jasmine');
 
-  grunt.registerTask('default', ['jshint', 'concat', 'uglify']);
+  grunt.registerTask('default', ['jshint', 'jasmine', 'concat', 'uglify']);
 };
