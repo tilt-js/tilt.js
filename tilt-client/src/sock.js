@@ -54,6 +54,9 @@
       var args = Array.prototype.slice.call(arguments);
       if (this.isGame) {
         var controller = args.shift();
+        if (typeof controller === "object") {
+          controller = controller.id;
+        }
         this.socket.emit('msg', controller, args);
       } else {
         this.socket.emit('msg', args);
@@ -77,9 +80,7 @@
         return false;
       }
 
-      if (this.controllers.indexOf(controllerID) === -1) {
-        this.controllers.push(controllerID);
-      }
+      this.controllers.push(new Tilt.Controller(this, controllerID));
     },
     deleteController: function(controllerID) {
       if (this.isGame === false) {
@@ -88,7 +89,7 @@
       }
 
       this.controllers = this.controllers.filter(function(item) {
-        return item === controllerID;
+        return item.id === controllerID;
       });
     }
   };
