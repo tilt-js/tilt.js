@@ -30,10 +30,16 @@
         self.roomID = roomid;
       });
       this.socket.emit('join', 'computer');
+      this.socket.on('msg', function(controller, args) {
+        self.receiveMsg(args, controller);
+      });
     } else {
       this.socket.emit('join', 'controller', roomid);
       this.isGame = false;
       this.roomID = roomid;
+      this.socket.on('msg', function(args) {
+        self.receiveMsg(args);
+      });
     }
 
     this.socket.on('notifySuccess', function() {
@@ -41,10 +47,6 @@
     });
 
     this.callbacks = {};
-
-    this.socket.on('msg', function() {
-      self.receiveMsg(arguments);
-    });
   };
 
   Sock.prototype = {
@@ -62,19 +64,23 @@
       return this;
     },
     emit: function() {
-      var a = Array.prototype.slice.call(arguments);
-      a.unshift('msg');
-      this.socket.emit.apply(this.socket, a);
+      var args = Array.prototype.slice.call(arguments);
+      if (this.isGame) {
+        var controller = args.shift();
+        this.socket.emit('msg', controller, args);
+      } else {
+        this.socket.emit('msg', args);
+      }
 
       return this;
     },
     // INTERNAL FUNCTIONS
-    receiveMsg: function(args) {
-      var a = Array.prototype.slice.call(args);
+    receiveMsg: function(args, controller) {
       var e = args.shift();
+      if (controller) { args.unshift(controller); }
       if (this.callbacks[e] !== undefined) {
         for (var i in this.callbacks[e]) {
-          this.callbacks[e][i].apply(this, a);
+          this.callbacks[e][i].apply(this, args);
         }
       }
     },
