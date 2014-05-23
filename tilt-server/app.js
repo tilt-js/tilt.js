@@ -25,37 +25,56 @@ function getRoomID() {
 }
 
 function registerComputerToRoom(id, socket) {
-    rooms[id] = socket;
+    rooms[id] = {computer: socket, players: {}};
 }
 
 function registerPlayerToRoom(room_id, socket) {
-    players[socket_id] = room_id;
+    rooms[room_id].players[socket.id] = socket.id;
+    players[socket.id] = {player: socket, room: rooms[room_id].computer};
 }
 
 io.sockets.on('connection', function(socket) {
-    socket.on('join', function (type, name, id) {
+    socket.on('join', function (type, id) {
         console.log("connected");
         if (type === 'computer') {
             id = getRoomID();
             socket.join(id);
             registerComputerToRoom(id, socket);
             socket.emit('notifyRoomID', id);
+            socket.type = 'computer';
         } else if (type === 'controller') {
-            if (id in rooms) {
+            if (rooms[id]) {
+                room_sock = rooms[id].computer;
                 socket.join(id);
-                socket.emit("notifySuccess", "Joined room successfully.")
                 registerPlayerToRoom(id, socket);
+                socket.emit("notifySuccess", "Joined room successfully.");
+                room_sock.emit("notifyController", socket.id);
+                socket.type = 'controller';
             } else {
-                socket.emit('Error', 'Not a valid room.');
+                socket.emit('error', 'Not a valid room.');
             }
         }
     });
 
-    socket.on('msg', function (funcName) {
-        args = ['msg', arguments[0], socket_id];
-        arguments.shift();
-        args.concat(arguments);
-        socket.emit.apply(null, args);
+    socket.on('msg', function () {
+        if (socket.type === 'computer') {
+            id = arguments[0];
+            if (id in players) {
+                player_sock = players[id].player;
+                if (player_sock) {
+                    player_sock.emit('msg', arguments[1]);
+                } else {
+                    socket.emit("error", "Player socket is no longer valid");
+                }
+            } else {
+                socket.emit('error', 'Not valid controller id.');
+            }
+        } else if (socket.type === 'controller') {
+            room_socket = players[socket.id].room;
+            room_socket.emit('msg', socket.id, arguments[0]);
+        } else {
+            socket.emit("error", "Bad msg format");
+        }
     });
 
     socket.on('ping', function() {

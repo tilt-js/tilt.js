@@ -5,6 +5,7 @@ describe('Testing Suite', function() {
     var socket;
     var pong;
     var joinRoom;
+    var chatRoom;
     beforeEach(function(done) {
         // Setup
         socket = io.connect('http://localhost:9000', {
@@ -26,11 +27,17 @@ describe('Testing Suite', function() {
             },
             notifyRoomID: function(id) {
                 console.log('joined room. Got id ' + id);
+                chatRoom = id;
+                socket.emit('join', 'controller', id);
+            },
+            notifySuccess: function() {
+                console.log('controller joined room successfully');
             }
         };
 
         spyOn(callbacks, "pong");
         spyOn(callbacks, "notifyRoomID");
+        spyOn(callbacks, "notifySuccess");
         socket.on("pong", callbacks.pong);
         socket.on("notifyRoomID", callbacks.notifyRoomID);
         socket.emit('ping');
@@ -60,11 +67,14 @@ describe('Testing Suite', function() {
             expect(callbacks.pong).wasCalled();
             done();
         });
-
         
         it('checking join room', function(done) {
             expect(callbacks.notifyRoomID).wasCalled();
             done();
+        });
+
+        it('checking controller joined', function(done) {
+            expect(callbacks.no)
         });
 
     });
