@@ -1,5 +1,3 @@
-// var assert = require('assert');
-
 describe('Sock object', function() {
   var socket;
   var pong;
@@ -10,10 +8,21 @@ describe('Sock object', function() {
   afterEach(function() {
   });
 
-  describe('Checking connection', function() {
-    it('Just checking basic connection', function() {
-      expect(true).toBe(true);
-    });
+  it('should exist', function() {
+    expect(window.Tilt.Sock).toBeDefined();
   });
 
+  it('should connect and return a new sock object', function() {
+    expect(window.Tilt.connect('10.0.0.1') instanceof window.Tilt.Sock).toBeTruthy();
+  });
+
+  describe('for games', function() {
+    it('should emit messages', function() {
+      var s = window.Tilt.connect('10.0.0.1');
+
+      s.emit('cntID', 'msgname', 'argblah');
+      var emits = io.mockGetFunctionCalls('emit');
+      expect(emits[emits.length - 1]).toEqual(['msg', 'cntID', ['msgname', 'argblah']]);
+    });
+  });
 });
