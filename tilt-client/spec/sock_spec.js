@@ -25,4 +25,14 @@ describe('Sock object', function() {
       expect(emits[emits.length - 1]).toEqual(['msg', 'cntID', ['msgname', 'argblah']]);
     });
   });
+
+  describe('for controllers', function() {
+    it('should emit messages', function() {
+      var s = window.Tilt.connect('10.0.0.1', 'gameidhere');
+
+      s.emit('msgname', 'argblah');
+      var emits = io.mockGetFunctionCalls('emit');
+      expect(emits[emits.length - 1]).toEqual(['msg', ['msgname', 'argblah']]);
+    });
+  });
 });
