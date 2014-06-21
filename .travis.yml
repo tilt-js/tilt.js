@@ -6,4 +6,4 @@ node_js:
   - "0.6"
 env:
   - TEST_DIR=tilt-client
-script: cd $TEST_DIR && npm test
+script: cd $TEST_DIR && npm install && npm test
