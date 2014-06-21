@@ -3,7 +3,17 @@ describe('Sock object', function() {
   var pong;
   var joinRoom;
 
+  beforeEach(function() {
+    mockSock = jasmine.createSpyObj('socket', ['emit', 'on']);
+    io = {};
+    io.connect = function() {
+      return mockSock;
+    };
+    this.mockSock = mockSock;
+  });
+
   afterEach(function() {
+    io.connect = undefined;
   });
 
   it('should exist', function() {
@@ -18,10 +28,14 @@ describe('Sock object', function() {
     beforeEach(function() {
       this.s = window.Tilt.connect('10.0.0.1');
     });
+
+    it('should send a join command', function() {
+      expect(this.mockSock.emit).toHaveBeenCalledWith('join', 'computer');
+    });
+
     it('should emit messages', function() {
       this.s.emit('cntID', 'msgname', 'argblah');
-      var emits = io.mockGetFunctionCalls('emit');
-      expect(emits[emits.length - 1]).toEqual(['msg', 'cntID', ['msgname', 'argblah']]);
+      expect(this.mockSock.emit).toHaveBeenCalledWith('msg', 'cntID', ['msgname', 'argblah']);
     });
   });
 
@@ -29,10 +43,13 @@ describe('Sock object', function() {
     beforeEach(function() {
       this.s = window.Tilt.connect('10.0.0.1', 'gameidhere');
     });
+
+    it('should send a join command', function() {
+      expect(this.mockSock.emit).toHaveBeenCalledWith('join', 'controller', 'gameidhere');
+    });
     it('should emit messages', function() {
       this.s.emit('msgname', 'argblah');
-      var emits = io.mockGetFunctionCalls('emit');
-      expect(emits[emits.length - 1]).toEqual(['msg', ['msgname', 'argblah']]);
+      expect(this.mockSock.emit).toHaveBeenCalledWith('msg', ['msgname', 'argblah']);
     });
   });
 });
