@@ -29,6 +29,7 @@ describe('Testing Suite', function() {
                 console.log('joined room. Got id ' + id);
                 chatRoom = id;
                 socket.emit('join', 'controller', id);
+                socket.on("notifySuccess", this.notifySuccess);
             },
             notifySuccess: function() {
                 console.log('controller joined room successfully');
@@ -67,14 +68,14 @@ describe('Testing Suite', function() {
             expect(callbacks.pong).wasCalled();
             done();
         });
-        
         it('checking join room', function(done) {
             expect(callbacks.notifyRoomID).wasCalled();
             done();
         });
 
         it('checking controller joined', function(done) {
-            expect(callbacks.no)
+            expect(callbacks.notifySuccess);
+            done();
         });
 
     });

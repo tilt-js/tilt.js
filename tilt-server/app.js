@@ -38,10 +38,10 @@ io.sockets.on('connection', function(socket) {
         console.log("connected");
         if (type === 'computer') {
             id = getRoomID();
-            socket.join(id);
             registerComputerToRoom(id, socket);
             socket.emit('notifyRoomID', id);
             socket.type = 'computer';
+            socket.room_id = id
         } else if (type === 'controller') {
             if (rooms[id]) {
                 room_sock = rooms[id].computer;
@@ -58,9 +58,11 @@ io.sockets.on('connection', function(socket) {
 
     socket.on('msg', function () {
         if (socket.type === 'computer') {
-            id = arguments[0];
-            if (id in players) {
-                player_sock = players[id].player;
+            controller_id = arguments[0];
+            if (controller_id == 'all') {
+                socket.broadcast.to(socket.room_id).emit('msg', arguments[1]);
+            } else if (controller_id in players) {
+                player_sock = players[controller_id].player;
                 if (player_sock) {
                     player_sock.emit('msg', arguments[1]);
                 } else {

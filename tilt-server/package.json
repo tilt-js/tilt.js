@@ -1,12 +1,16 @@
 {
-  "name": "the-surf-ace",
+  "name": "tiltjs-server",
   "version": "0.0.0",
-  "description": "Ben Eath, The Surf Ace",
+  "description": "TiltJS",
   "main": "app.js",
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "jasmine-node": "^1.14.3",
     "socket.io": "^0.9.16",
     "ws": "~0.4.31"
+  },
+  "scripts": {
+    "test": "jasmine-node spec"
   }
 }
