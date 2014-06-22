@@ -4,4 +4,5 @@ node_js:
   - "0.10"
 env:
   - TEST_DIR=tilt-client
+  - TEST_DIR=tilt-server
 script: cd $TEST_DIR && npm install && npm test
